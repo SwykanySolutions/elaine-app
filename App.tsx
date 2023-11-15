@@ -1,20 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// In App.js in a new project
 
-export default function App() {
+import * as React from "react";
+import { View, Text } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { verifyAllTables } from "./database/connection/";
+import sessionStorageApp from "./storage/SessionStorage";
+import RegisterScreen  from "./screens/Register";
+import DashboardScreen from "./screens/Dashboard";
+import LoginScreen from "./screens/Login";
+
+
+const Stack = createNativeStackNavigator();
+
+function App() {
+  React.useEffect(() => {
+    verifyAllTables();
+  });
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator 
+        initialRouteName={(sessionStorageApp.getValor("status")) ? "Dashboard" : "Login"}
+      >
+        <Stack.Screen 
+          name="Register" 
+          component={RegisterScreen}
+        />
+        <Stack.Screen 
+          name="Login" 
+          component={LoginScreen}
+        />
+        <Stack.Screen 
+          name="Dashboard" 
+          component={DashboardScreen}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
